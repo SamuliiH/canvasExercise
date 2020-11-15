@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+     <style>
+     body{
+       background-color:#E6E2DD;
+     }
+       #mycanvas{
+         border: solid 6px #373A36;
+         margin-top: 50px;
+         background-color: #D48166;
+       }
+       h1, span{
+         color: #373A36;
+       }
+
+     </style>
+   </head>
+
+      <body>
+        <h1>Säädä nestepinnan korkeus <span id="height"></span>cm</h1>
+        <span style="margin-left:40px">0cm</span>
+        <input oninput="showVal(this.value)" id="range" type="range" name="value" min="0" max="200">
+        <span>200cm</span>
+        </br>
+        <canvas height="600px"  width="600px" id = "mycanvas"></canvas>
+
+       <script type = "text/javascript">
+            const height = document.getElementById("height");
+            let mycanvas = document.getElementById("mycanvas");
+            let slider = document.getElementById('range');
+
+            // to html
+            function renderHeight() {
+              height.innerHTML = slider.value;
+            }
+
+            context = mycanvas.getContext("2d");
+
+            // draw canvas circle
+            function drawCircle(value) {
+              renderHeight();
+
+              context.beginPath();
+              context.strokeStyle = "black";
+              context.lineWidth = 1.0;
+              context.arc(100,100,50,(Math.PI/180)*0,(Math.PI/180)*360,false);
+              const grdLinear = context.createLinearGradient(0, 0, 0, -value + 300 );
+              grdLinear.addColorStop(0.0, 'white');
+              grdLinear.addColorStop(0.5,'white');
+              grdLinear.addColorStop(0.5,'#3CBCC3');
+              grdLinear.addColorStop(1, '#3CBCC3');
+              context.fillStyle = grdLinear;
+              context.fill();
+              context.stroke();
+              context.closePath();
+            }
+
+            // write liters to canvas
+            function liquid(value) {
+              const height = 200;
+              const h = value;
+              const r = height/2;
+              let usedVolume =(r*r*Math.acos((r-h)/r) - (r-h)*Math.sqrt(2*r*h-h*h))/10;
+              context.clearRect(30,490,130,600);
+              context.fillStyle = "black";
+              context.font="20px Arial";
+              context.fillText(usedVolume.toFixed(2), 30,520);
+            }
+
+            // handle changes
+            function showVal(val) {
+              const value = Number(val);
+              drawCircle(value);
+              liquid(value);
+            }
+
+            //default canvas
+            showVal(100);
+            context.font="20px Arial";
+            context.fillText("Tynnyrin pituus 100cm", 30,400);
+            context.fillText("Tynnyrin halkaisija 200cm", 30,430);
+            context.fillText("Tynnyrin tilavuus 3141.59 litraa", 30,460);
+            context.fillText("Nestemäärä", 30,490);
+      </script>
+
+
+   </body>
+</html>
